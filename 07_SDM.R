@@ -91,6 +91,13 @@ plot(p1, col = rev(brewer.pal(name = "Spectral", n = 10)))
 p2 <- predict(m2, newdata=predictors)
 plot(p2, col = rev(brewer.pal(name = "Spectral", n = 10)))
 
+# Ensemble model
+e1 <- ensemble(m1, 
+               newdata=predictors,
+               setting=list(method='weighted',stat='AUC'))
+Sys.time()
+plot(e1, col = rev(brewer.pal(name = "Spectral", n = 10)), main = "Ensemle prediction")
+
 
 # writeRaster(p1, filename = "data/processed/Predictions/glm_sub.tif",
 #             format = 'GTiff', options = tifOptions, overwrite = TRUE)
