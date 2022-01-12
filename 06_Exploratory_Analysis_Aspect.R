@@ -1,4 +1,4 @@
-# Задача - определить значимость экспозиции для расопложения наблюдений
+# Задача - определить значимость экспозиции для расположения наблюдений
 
 library(tidyverse)
 library(raster)
@@ -23,6 +23,9 @@ load("data/processed/voronezh_admin_border.Rdata")
 
 # Observations
 load("data/processed/observations.Rdata")
+
+# Брандушка - upd Jan 2022
+load("data/processed/BV_observations_upd_aea.Rdata")
 
 # Aspect
 aspect_files <- c("data/processed/Elevation/aspect_500_cat.tif", 
@@ -57,7 +60,7 @@ as.data.frame(aspect_500_vals) %>%
 
 
 # Extract values by observations
-aspect_obs_vals <- extract(aspect_cat, as(observations, "Spatial")) %>% as.data.frame()
+aspect_obs_vals <- extract(aspect_cat, as(BV_observations_upd_aea[BV_observations_upd_aea$Occurrence == 1,], "Spatial")) %>% as.data.frame()
 colnames(aspect_obs_vals) <- c("500", "1000")
 
 # Calculate number of observations by aspect
@@ -88,7 +91,6 @@ aspect_vals %>%
 # Save as Rdata file
 save(aspect_vals, file = "data/processed/aspect_vals.Rdata")
 
-
 # ===================================
 # 2. Test Differences in distribution
 # ===================================
@@ -113,5 +115,5 @@ aspect_EA_plot <- aspect_vals %>%
          color = "none")+
   facet_wrap(.~scale)
 
-ggsave(aspect_EA_plot, filename = "plots/aspect_EA_plot.jpg", 
+ggsave(aspect_EA_plot, filename = "plots/BV_aspect_EA_plot_upd.jpg", 
        device = "jpeg", dpi = 320, width = 18, height = 8, units = "cm")

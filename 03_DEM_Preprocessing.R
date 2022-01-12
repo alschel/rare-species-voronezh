@@ -193,16 +193,3 @@ writeRaster(aspect_500_cat, filename = paste0("data/processed/Elevation/aspect_5
             format = 'GTiff', options = tifOptions, overwrite = TRUE)
 writeRaster(aspect_1000_cat, filename = paste0("data/processed/Elevation/aspect_1000_cat.tif"),
             format = 'GTiff', options = tifOptions, overwrite = TRUE)
-
-# ===================
-# 3. Points
-# ===================
-load("data/processed/aea_voronezh.Rdata")
-
-observations <- read_sf("data/raw/Observations/observations.shp")
-plot(observations)
-observations %>% st_transform(crs = aea_voronezh) -> observations
-
-save(observations, file = "data/processed/observations.Rdata")
-
-plot(observations)

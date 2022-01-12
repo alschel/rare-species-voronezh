@@ -20,31 +20,37 @@ tifOptions <- c("COMPRESS=DEFLATE", "PREDICTOR=2", "ZLEVEL=6")
 # Admin border
 load("data/processed/voronezh_admin_border.Rdata")
 
+# # Observations
+# load("data/processed/observations.Rdata")
+# # Add column Occurrence and set it equal to 1
+# observations %>% 
+#   mutate(Occurrence = 1) %>% 
+#   dplyr::select(Occurrence) -> observations
+# 
+# # Create random points that represent locations with no observations
+# set.seed(12)
+# random_points <- st_sample(voronezh_admin_border_simplified_aea, 100)
+# 
+# # Add column Occurrence and set it equal to 0
+# random_points %>% 
+#   st_as_sf() %>% 
+#   mutate(Occurrence = 0) %>% 
+#   dplyr::select(Occurrence) %>% 
+#   as(., "Spatial") %>% 
+#   st_as_sf() -> random_points
+# 
+# # Merge observations and random points
+# observations %>% 
+#   rbind(random_points) -> species
+# 
+# # Change to sp object
+# species <- as(species, "Spatial")
+
 # Observations
-load("data/processed/observations.Rdata")
-# Add column Occurrence and set it equal to 1
-observations %>% 
-  mutate(Occurrence = 1) %>% 
-  dplyr::select(Occurrence) -> observations
-
-# Create random points that represent locations with no observations
-set.seed(12)
-random_points <- st_sample(voronezh_admin_border_simplified_aea, 100)
-
-# Add column Occurrence and set it equal to 0
-random_points %>% 
-  st_as_sf() %>% 
-  mutate(Occurrence = 0) %>% 
-  dplyr::select(Occurrence) %>% 
-  as(., "Spatial") %>% 
-  st_as_sf() -> random_points
-
-# Merge observations and random points
-observations %>% 
-  rbind(random_points) -> species
+load("data/processed/BV_observations_upd_aea.Rdata")
 
 # Change to sp object
-species <- as(species, "Spatial")
+species <- as(BV_observations_upd_aea[,"Occurrence"], "Spatial")
 
 # Predictors
 predictors_file <- list.files("data/processed/Predictors_02/", full.names = T)
@@ -91,6 +97,11 @@ plot(p1, col = rev(brewer.pal(name = "Spectral", n = 10)))
 p2 <- predict(m2, newdata=predictors)
 plot(p2, col = rev(brewer.pal(name = "Spectral", n = 10)))
 
+# writeRaster(p1, filename = "data/processed/Predictions/glm_sub.tif",
+#             format = 'GTiff', options = tifOptions, overwrite = TRUE)
+# writeRaster(p2, filename = "data/processed/Predictions/glm_cv.tif",
+#             format = 'GTiff', options = tifOptions, overwrite = TRUE)
+
 # Ensemble model
 e1 <- ensemble(m1, 
                newdata=predictors,
@@ -99,7 +110,4 @@ Sys.time()
 plot(e1, col = rev(brewer.pal(name = "Spectral", n = 10)), main = "Ensemle prediction")
 
 
-# writeRaster(p1, filename = "data/processed/Predictions/glm_sub.tif",
-#             format = 'GTiff', options = tifOptions, overwrite = TRUE)
-# writeRaster(p2, filename = "data/processed/Predictions/glm_cv.tif",
-#             format = 'GTiff', options = tifOptions, overwrite = TRUE)
+
