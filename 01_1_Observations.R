@@ -4,14 +4,14 @@ library(tidyverse)
 library(sf)
 library(mapview)
 
-# ===================
-# 1. Брандушка
-# ===================
-
 # Проекция
 load("data/processed/aea_voronezh.Rdata")
 
-observations <- read_sf("data/raw/Observations/observations.shp")
+# ============
+# 1. Брандушка
+# ============
+
+observations <- read_sf("data/raw/Localities/Observations/observations.shp")
 plot(observations)
 observations %>% st_transform(crs = aea_voronezh) -> observations
 
@@ -24,7 +24,7 @@ plot(observations)
 # ===========================
 
 # Read raw data
-BV_observations_upd <- read_sf("data/raw/Bulbocodium_versicolor_upd_Jan2022/Bulbocodium_versicolor_obnovlenny_nabor/проба.shp", 
+BV_observations_upd <- read_sf("data/raw/Localities/Bulbocodium_versicolor_upd_Jan2022/Bulbocodium_versicolor_obnovlenny_nabor/проба.shp", 
                                options = "ENCODING=CP1251")
 
 # Change colnames
@@ -36,7 +36,7 @@ BV_observations_upd %>%
   select(-id, -discript) -> BV_observations_upd
 
 # Read data on absent locations
-BV_absence <- read_csv("data/raw/Bulbocodium_versicolor_upd_Jan2022/BV_absence.csv", 
+BV_absence <- read_csv("data/raw/Localities/Bulbocodium_versicolor_upd_Jan2022/BV_absence.csv", 
                        col_types = c("cdddcd"))
 
 # Create sf obj
@@ -52,4 +52,22 @@ mapview(BV_observations_upd_aea)
 # Save as Rdata file
 save(BV_observations_upd_aea, file = "data/processed/BV_observations_upd_aea.Rdata")
 
+# ==========================================
+# 3. Paeonia tenuifolia L (Пион узколистный)
+# ==========================================
 
+# Read raw data
+PTL_observations <- read_sf("data/raw/Localities/Paeonia_tenuifolia_L/Paeonia tenuifolia.shp", 
+                               options = "ENCODING=CP1251")
+
+# Change colnames and project
+PTL_observations %>% 
+  mutate(Species = "Paeonia tenuifolia L",
+         Occurrence = 1,
+         Quality = `источник`,
+         Description = `метаданные`) %>% 
+  select(-id, -`источник`, -`метаданные`) %>% 
+  st_transform(aea_voronezh) -> PTL_observations_aea
+
+# Save as Rdata file
+save(PTL_observations_aea, file = "data/processed/PTL_observations_aea.Rdata")
