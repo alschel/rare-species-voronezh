@@ -129,4 +129,4 @@ aspect_EA_plot <- aspect_vals %>%
   facet_wrap(.~scale, labeller = as_labeller(c("500" = "500 m", "1000" = "1000 m")))
 
 ggsave(aspect_EA_plot, filename = "plots/BV_aspect_EA_plot_upd.jpg", 
-       device = "jpeg", dpi = 320, width = 16, height = 12, units = "cm")
+       device = "jpeg", dpi = 320, width = 18, height = 11, units = "cm")
