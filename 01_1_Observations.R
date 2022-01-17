@@ -53,7 +53,7 @@ mapview(BV_observations_upd_aea)
 save(BV_observations_upd_aea, file = "data/processed/BV_observations_upd_aea.Rdata")
 
 # ==========================================
-# 3. Paeonia tenuifolia L (Пион узколистный)
+# 3. Paeonia tenuifolia L. (Пион узколистный)
 # ==========================================
 
 # Read raw data
@@ -71,3 +71,23 @@ PTL_observations %>%
 
 # Save as Rdata file
 save(PTL_observations_aea, file = "data/processed/PTL_observations_aea.Rdata")
+
+# ====================================
+# 4. Iris pumila L. (Ирис карликовый )
+# ====================================
+
+# Read raw data
+IPL_observations <- read_sf("data/raw/Localities/Iris_pumila_L/Iris pumila.shp", 
+                            options = "ENCODING=UTF-8")
+
+# Change colnames and project
+IPL_observations %>% 
+  mutate(Species = "Iris pumila L",
+         Occurrence = 1,
+         Quality = `Точно`,
+         Description = `Метад`) %>% 
+  select(-id, -`Точно`, -`Метад`) %>% 
+  st_transform(aea_voronezh) -> IPL_observations_aea
+
+# Save as Rdata file
+save(IPL_observations_aea, file = "data/processed/IPL_observations_aea.Rdata")
